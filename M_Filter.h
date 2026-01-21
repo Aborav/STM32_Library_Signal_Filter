@@ -1,41 +1,59 @@
 #ifndef __M_FILTER_H__
 #define __M_FILTER_H__
 
-#include "stm32f0xx.h"
+#include "main.h"
 
 
 //Signal Filter mini lib
 
 /*
 Ho to use:
+////////////////////////////////////////////////////////////////////////
 -create filtering buffer
-
+-declare required variable type
 */
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//defines
+////////////////////////////////////////////////////////////////////////
+#define max(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
 
-
+#define min(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a < _b ? _a : _b; })
+     
+     
+//typedef     
+////////////////////////////////////////////////////////////////////////
+typedef uint16_t filter_type;
          
 
+//functions
+////////////////////////////////////////////////////////////////////////
 /*
  * @brief median filter function  
  * @param[out] *meas -> pointer to a filtering variable (uint16_t)
  * @param[in] buf -> mediana filter buffer
  */
-void MedianFilter(uint16_t *meas, uint16_t buf[]) {
+void MedianFilter(filter_type *var, filter_type buf[]) {
   buf[0] = buf[1];
   buf[1] = buf[2];
   buf[2] = *meas;
-  *meas = (max(buf[0], buf[1]) == max(buf[1], buf[2])) ? max(buf[0], buf[2]) : max(buf[1], min(buf[0], buf[2]));
+  *var = (max(buf[0], buf[1]) == max(buf[1], buf[2])) ? max(buf[0], buf[2]) : max(buf[1], min(buf[0], buf[2]));
 }
 
+
+////////////////////////////////////////////////////////////////////////
 /*
  * @brief running average filter function  
  * @param[in] *new_val -> pointer to a filtering variable
  * @param[in] k -> averaging factor
  */
-uint16_t ExpRunAverage(uint16_t *new_val, float k) {
-  static float filt_val = 0;
+filter_type ExpRunAverage(filter_type *new_val, float k) {
+  static filter_type filt_val;
   filt_val += (*new_val - filt_val) * k;
   return filt_val;
 }
