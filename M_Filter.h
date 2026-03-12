@@ -7,10 +7,10 @@
 //Signal Filter mini lib
 
 /*
-Ho to use:
+How to use:
 ////////////////////////////////////////////////////////////////////////
 -create filtering buffer
--declare required variable type
+-declare required variable type (typedef)
 */
 
 //defines
@@ -26,37 +26,14 @@ Ho to use:
      _a < _b ? _a : _b; })
      
      
-//typedef     
+//Typedef
 ////////////////////////////////////////////////////////////////////////
 typedef uint16_t filter_type;
          
-
-//functions
+//Functions
 ////////////////////////////////////////////////////////////////////////
-/*
- * @brief median filter function  
- * @param[out] *meas -> pointer to a filtering variable (uint16_t)
- * @param[in] buf -> mediana filter buffer
- */
-void FilterMedian(filter_type *var, filter_type buf[]) {
-  buf[0] = buf[1];
-  buf[1] = buf[2];
-  buf[2] = *var;
-  *var = (max(buf[0], buf[1]) == max(buf[1], buf[2])) ? max(buf[0], buf[2]) : max(buf[1], min(buf[0], buf[2]));
-}
-
-
-////////////////////////////////////////////////////////////////////////
-/*
- * @brief running average filter function  
- * @param[in] *new_val -> pointer to a filtering variable
- * @param[in] k -> averaging factor
- */
-void FilterRunAverage(filter_type *var, float k) {
-  static filter_type filt_val;
-  filt_val += (*var - filt_val) * k;
-  *var=filt_val;
-}
+void FilterMedian(filter_type *var, filter_type buf[]);
+void FilterRunAverage(filter_type *var, float k);
 
 
 #endif
